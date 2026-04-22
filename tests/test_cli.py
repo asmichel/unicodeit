@@ -2,6 +2,7 @@ import subprocess
 import sys
 
 import pytest
+from unicodeit.cli import main
 
 
 PYTHON = 'python3' if sys.platform != 'win32' else 'python'
@@ -60,3 +61,9 @@ def test_superscripts():
     ])
     print(r.decode())
     assert r.decode().strip() == 'mᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁᵂᵃᵇᶜᵈᵉᶠᵍʰⁱᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻᵝᵞᵟᵠᵡ˂˃'
+
+
+def test_main_entrypoint(capsys):
+    assert main(['\\Sigma']) == 0
+    captured = capsys.readouterr()
+    assert captured.out.strip() == 'Σ'

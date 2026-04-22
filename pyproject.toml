@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unicodeit"
+dynamic = ["version"]
+description = "Converts LaTeX tags to unicode"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Sven Kreiss", email = "research@svenkreiss.com"},
+]
+urls = {Homepage = "https://github.com/svenkreiss/unicodeit"}
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pycodestyle",
+    "pylint",
+    "pytest",
+]
+
+[project.scripts]
+unicodeit = "unicodeit.cli:main"
+
+[tool.setuptools]
+packages = ["unicodeit"]
+
+[tool.setuptools.dynamic]
+version = {attr = "unicodeit.__version__"}

@@ -20,13 +20,21 @@ Available online at [unicodeit.net](https://www.unicodeit.net).
 
 ## Python
 
-Install with `pip install unicodeit` and run
+Install the CLI from this repo with `uv tool install .` and run
+
+```sh
+unicodeit \\alpha
+```
+
+If you publish or install from an index instead, use `uv tool install unicodeit`.
+
+The module entrypoint still works too:
 
 ```sh
 python -m unicodeit.cli \\alpha
 ```
 
-or in Python
+In Python:
 
 ```py
 import unicodeit
