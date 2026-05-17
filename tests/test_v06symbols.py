@@ -4,9 +4,11 @@ import sys
 import pytest
 
 
+# PYTHON names the interpreter used for subprocess CLI checks.
 PYTHON = 'python3' if sys.platform != 'win32' else 'python'
 
 
+# SYMBOLS_V06 contains LaTeX-to-Unicode fixtures carried from the v0.6 data set.
 SYMBOLS_V06 = [
     (r'\textfractionsolidus', '\u2044'),
     (r'\leftrightsquigarrow', '\u21AD'),
@@ -699,6 +701,8 @@ SYMBOLS_V06 = [
     (r'\h', '\u210E'),
     (r'\i', '\u2139'),
 ]
+
+# COMBININGMARKS_V06 contains v0.6 combining mark command fixtures.
 COMBININGMARKS_V06 = [
     (r'\tilde', '\u0303'),
     (r'\grave', '\u0300'),
@@ -715,6 +719,8 @@ COMBININGMARKS_V06 = [
     (r'\strikethrough', '\u0335'),
     (r'\bar', '\u0305'),
 ]
+
+# SUBSUPERSCRIPTS_V06 contains v0.6 subscript and superscript fixtures.
 SUBSUPERSCRIPTS_V06 = [
     (r'_x', '\u2093'),
     (r'_v', '\u1D65'),
@@ -826,47 +832,48 @@ SUBSUPERSCRIPTS_V06 = [
 ]
 
 
+def run_cli_stdin(source):
+    """Return unicodeit CLI output when source is provided through stdin."""
+    return subprocess.check_output([
+        PYTHON, '-m', 'unicodeit.cli',
+    ], input=source, text=True)
+
+
 @pytest.mark.parametrize('sets_of_symbols', [SYMBOLS_V06, SUBSUPERSCRIPTS_V06])
 def test_symbols_v06(sets_of_symbols):
+    """Verify test_symbols_v06 converts v0.6 symbol batches from stdin."""
     for i in range(0, len(sets_of_symbols), 20):
         symbols = sets_of_symbols[i:i + 20]
         latex = ''.join([l for l, _ in symbols])
         unicode = ''.join([u for _, u in symbols])
         print(latex)
 
-        r = subprocess.check_output([
-            PYTHON, '-m', 'unicodeit.cli',
-            latex,
-        ])
-        print(r.decode())
-        assert r.decode().strip() == unicode.strip()
+        r = run_cli_stdin(latex)
+        print(r)
+        assert r.strip() == unicode.strip()
 
 
 def test_combiningmarks_v06():
+    """Verify test_combiningmarks_v06 converts mark batches from stdin."""
     for i in range(0, len(COMBININGMARKS_V06), 20):
         symbols = COMBININGMARKS_V06[i:i + 20]
         latex = ''.join([l + '{a}' for l, _ in symbols])
         unicode = ''.join(['a' + u for _, u in symbols])
         print(latex)
 
-        r = subprocess.check_output([
-            PYTHON, '-m', 'unicodeit.cli',
-            latex,
-        ])
-        print(r.decode())
-        assert r.decode().strip() == unicode
+        r = run_cli_stdin(latex)
+        print(r)
+        assert r.strip() == unicode
 
 
 def test_combiningmarks_v06_nested_replace():
+    """Verify test_combiningmarks_v06_nested_replace handles nested symbols."""
     for i in range(0, len(COMBININGMARKS_V06), 20):
         symbols = COMBININGMARKS_V06[i:i + 20]
         latex = ''.join([l + '{\\alpha}' for l, _ in symbols])
         unicode = ''.join(['\u03B1' + u for _, u in symbols])
         print(latex)
 
-        r = subprocess.check_output([
-            PYTHON, '-m', 'unicodeit.cli',
-            latex,
-        ])
-        print(r.decode())
-        assert r.decode().strip() == unicode
+        r = run_cli_stdin(latex)
+        print(r)
+        assert r.strip() == unicode
